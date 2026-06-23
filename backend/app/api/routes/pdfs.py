@@ -693,3 +693,78 @@ async def images_to_pdf(files: List[UploadFile] = File(...)):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create PDF: {str(e)}")
+
+@router.post("/protect")
+async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
+    if not password:
+        raise HTTPException(status_code=400, detail="Password cannot be empty")
+    contents = await file.read()
+    try:
+        reader = _read_pdf(contents)
+        writer = PdfWriter()
+        for page in reader.pages:
+            writer.add_page(page)
+        writer.encrypt(password)
+        output = BytesIO()
+        writer.write(output)
+        output.seek(0)
+        base = (file.filename or "document").rsplit(".", 1)[0]
+        return _pdf_response(output.getvalue(), f"{base}_protected.pdf")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/unlock")
+async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
+    if not password:
+        raise HTTPException(status_code=400, detail="Password cannot be empty")
+    contents = await file.read()
+    if len(contents) > MAX_PDF_SIZE:
+        raise HTTPException(status_code=413, detail="File too large")
+    try:
+        reader = PdfReader(BytesIO(contents))
+        if not reader.is_encrypted:
+            raise HTTPException(status_code=400, detail="PDF is not encrypted")
+        
+        # Try to decrypt
+        result = reader.decrypt(password)
+        if result == 0:  # Failed to decrypt
+            raise HTTPException(status_code=401, detail="Incorrect password")
+            
+        writer = PdfWriter()
+        for page in reader.pages:
+            writer.add_page(page)
+            
+        output = BytesIO()
+        writer.write(output)
+        output.seek(0)
+        base = (file.filename or "document").rsplit(".", 1)[0]
+        return _pdf_response(output.getvalue(), f"{base}_unlocked.pdf")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to unlock PDF: {str(e)}")
+
+@router.post("/metadata")
+async def get_pdf_metadata(file: UploadFile = File(...)):
+    contents = await file.read()
+    try:
+        reader = _read_pdf(contents)
+        meta = reader.metadata
+        if not meta:
+            return JSONResponse({"metadata": {}})
+            
+        return JSONResponse({"metadata": {
+            "title": meta.title,
+            "author": meta.author,
+            "subject": meta.subject,
+            "creator": meta.creator,
+            "producer": meta.producer,
+            "creation_date": meta.creation_date_raw if hasattr(meta, "creation_date_raw") else getattr(meta, "/CreationDate", None),
+            "modification_date": meta.modification_date_raw if hasattr(meta, "modification_date_raw") else getattr(meta, "/ModDate", None)
+        }})
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
