@@ -38,16 +38,24 @@ export function getFilenameFromResponse(
 }
 
 export async function postJsonFromApi<T>(endpoint: string, formData: FormData): Promise<T> {
+  const toolId = typeof window !== "undefined" ? window.location.pathname : "unknown";
   const response = await axios.post(`${API_URL}${endpoint}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+    headers: { 
+      "Content-Type": "multipart/form-data",
+      "X-Tool-Id": toolId
+    },
   });
   return response.data as T;
 }
 
 export async function postUrlEncodedFromApi<T>(endpoint: string, data: Record<string, string>): Promise<T> {
+  const toolId = typeof window !== "undefined" ? window.location.pathname : "unknown";
   const body = new URLSearchParams(data);
   const response = await axios.post(`${API_URL}${endpoint}`, body, {
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    headers: { 
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-Tool-Id": toolId
+    },
   });
   return response.data as T;
 }
@@ -56,9 +64,13 @@ export async function downloadBlobFromApi(
   formData: FormData,
   fallbackFilename: string
 ): Promise<void> {
+  const toolId = typeof window !== "undefined" ? window.location.pathname : "unknown";
   const response = await axios.post(`${API_URL}${endpoint}`, formData, {
     responseType: "blob",
-    headers: { "Content-Type": "multipart/form-data" },
+    headers: { 
+      "Content-Type": "multipart/form-data",
+      "X-Tool-Id": toolId
+    },
   });
 
   const url = window.URL.createObjectURL(new Blob([response.data]));

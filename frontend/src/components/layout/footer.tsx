@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MonitorSmartphone } from "lucide-react";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -10,9 +10,13 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1 flex flex-col space-y-4">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="bg-indigo-500/10 p-1.5 rounded-lg group-hover:bg-indigo-500/20 transition-colors">
-                <MonitorSmartphone className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-              </div>
+              <Image 
+                src="/logo.png" 
+                alt="DreamConsole Logo" 
+                width={32} 
+                height={32} 
+                className="rounded-lg group-hover:scale-110 transition-transform duration-300" 
+              />
               <span className="font-bold text-lg bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-fuchsia-600 dark:from-indigo-400 dark:to-fuchsia-400">DreamConsole</span>
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -32,6 +36,7 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4 text-sm tracking-wider uppercase text-foreground/80">Resources</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
+              <li><Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">About Us</Link></li>
               <li><Link href="/faq" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</Link></li>
               <li><Link href="/sitemap.xml" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Sitemap</Link></li>
