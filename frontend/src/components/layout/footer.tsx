@@ -32,8 +32,8 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4 text-sm tracking-wider uppercase text-foreground/80">Resources</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
-              <li><Link href="/blog" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Blog</Link></li>
               <li><Link href="/faq" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">FAQ</Link></li>
+              <li><Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</Link></li>
               <li><Link href="/sitemap.xml" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Sitemap</Link></li>
             </ul>
           </div>

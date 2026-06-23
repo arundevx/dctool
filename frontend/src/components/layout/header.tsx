@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { GlobalSearch } from "@/components/layout/global-search";
 import { buttonVariants } from "@/components/ui/button";
 import { MonitorSmartphone, Menu } from "lucide-react";
 import {
@@ -27,12 +28,12 @@ export function Header() {
             <Link href="/tools/developer" className="transition-colors hover:text-violet-600 dark:hover:text-violet-400 text-foreground/70">Developer</Link>
             <Link href="/tools/downloader" className="transition-colors hover:text-purple-600 dark:hover:text-purple-400 text-foreground/70">Downloader</Link>
             <Link href="/tools/seo" className="transition-colors hover:text-amber-600 dark:hover:text-amber-400 text-foreground/70">SEO</Link>
-            <Link href="/blog" className="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400 text-foreground/70">Blog</Link>
+            <Link href="/faq" className="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400 text-foreground/70">FAQ</Link>
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Search can go here later */}
+          <div className="w-full flex-1 md:w-auto md:flex-none flex justify-end md:justify-center md:mx-4">
+            <GlobalSearch />
           </div>
           <nav className="flex items-center space-x-2">
             <ThemeToggle />
@@ -49,7 +50,7 @@ export function Header() {
                     <Link href="/tools/developer" className="text-base font-medium p-3 rounded-xl hover:bg-violet-500/10 hover:text-violet-600 transition-colors">Developer Tools</Link>
                     <Link href="/tools/downloader" className="text-base font-medium p-3 rounded-xl hover:bg-purple-500/10 hover:text-purple-600 transition-colors">Downloader</Link>
                     <Link href="/tools/seo" className="text-base font-medium p-3 rounded-xl hover:bg-amber-500/10 hover:text-amber-600 transition-colors">SEO Tools</Link>
-                    <Link href="/blog" className="text-base font-medium p-3 rounded-xl hover:bg-indigo-500/10 hover:text-indigo-600 transition-colors">Blog</Link>
+                    <Link href="/faq" className="text-base font-medium p-3 rounded-xl hover:bg-indigo-500/10 hover:text-indigo-600 transition-colors">FAQ</Link>
                   </div>
                 </SheetContent>
               </Sheet>

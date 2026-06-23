@@ -1,8 +1,10 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Copy, RefreshCw, Minimize, AlignLeft, Check } from "lucide-react";
+import { Copy, RefreshCw, Minimize, AlignLeft, Check, FileJson } from "lucide-react";
+import { ToolLayout, toolBreadcrumbs } from "@/components/layout/tool-layout";
+import { CATEGORY_META } from "@/lib/tools";
 
 export default function JsonFormatterClient() {
   const [input, setInput] = useState("");
@@ -16,8 +18,8 @@ export default function JsonFormatterClient() {
       const parsed = JSON.parse(input);
       setOutput(JSON.stringify(parsed, null, 2));
       setError(null);
-    } catch (e: any) {
-      setError(e.message || "Invalid JSON");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Invalid JSON");
     }
   };
 
@@ -27,68 +29,71 @@ export default function JsonFormatterClient() {
       const parsed = JSON.parse(input);
       setOutput(JSON.stringify(parsed));
       setError(null);
-    } catch (e: any) {
-      setError(e.message || "Invalid JSON");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Invalid JSON");
     }
   };
 
   const handleCopy = () => {
-    if (output) {
-      navigator.clipboard.writeText(output);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+    if (!output) return;
+    navigator.clipboard.writeText(output);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="container mx-auto py-12 px-4 md:px-8 max-w-5xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">JSON Formatter & Validator</h1>
-        <p className="text-muted-foreground">Format, validate, and minify your JSON data instantly in the browser.</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Input JSON</h2>
-            <Button variant="ghost" size="sm" onClick={() => setInput("")}>
-              <RefreshCw className="h-4 w-4 mr-2" /> Clear
-            </Button>
-          </div>
-          <textarea
-            className="w-full h-[500px] p-4 font-mono text-sm border rounded-lg bg-background focus:ring-2 focus:ring-primary outline-none resize-none"
-            placeholder="Paste your JSON here..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Output</h2>
-            <Button variant="ghost" size="sm" onClick={handleCopy} disabled={!output}>
-              {copied ? <Check className="h-4 w-4 mr-2 text-green-500" /> : <Copy className="h-4 w-4 mr-2" />} 
-              {copied ? "Copied!" : "Copy"}
-            </Button>
-          </div>
-          <div className="relative">
+    <ToolLayout
+      breadcrumbs={toolBreadcrumbs(CATEGORY_META.developer.label, CATEGORY_META.developer.href, "JSON Formatter")}
+      title="JSON Formatter & Validator"
+      description="Format, validate, and minify your JSON data instantly in the browser."
+      icon={<FileJson className="h-10 w-10 text-violet-500" />}
+      colorTheme="violet"
+      privacyMode="browser"
+      maxWidth="6xl"
+      toolHref="/tools/developer/json-formatter"
+    >
+      <div className="glass-panel rounded-3xl overflow-hidden p-6 md:p-8 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Input JSON</label>
+              <Button variant="ghost" size="sm" onClick={() => { setInput(""); setOutput(""); setError(null); }}>
+                <RefreshCw className="h-4 w-4 mr-1" /> Clear
+              </Button>
+            </div>
             <textarea
-              className={`w-full h-[500px] p-4 font-mono text-sm border rounded-lg bg-muted/30 focus:ring-2 focus:ring-primary outline-none resize-none ${error ? 'border-destructive' : ''}`}
+              className="w-full min-h-[400px] p-4 font-mono text-sm border border-black/10 dark:border-white/15 rounded-xl bg-background focus:ring-2 focus:ring-violet-500 outline-none resize-y"
+              placeholder="Paste your JSON here..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Output</label>
+              <Button variant="ghost" size="sm" onClick={handleCopy} disabled={!output}>
+                {copied ? <Check className="h-4 w-4 mr-1 text-green-500" /> : <Copy className="h-4 w-4 mr-1" />}
+                {copied ? "Copied" : "Copy"}
+              </Button>
+            </div>
+            <textarea
+              className={`w-full min-h-[400px] p-4 font-mono text-sm border rounded-xl bg-muted/30 outline-none resize-y ${
+                error ? "border-destructive text-destructive" : "border-black/10 dark:border-white/15"
+              }`}
               readOnly
               value={error ? `Error:\n${error}` : output}
             />
           </div>
         </div>
+        <div className="flex flex-wrap gap-3 justify-center">
+          <Button onClick={handleFormat} className="gap-2 rounded-xl">
+            <AlignLeft className="h-4 w-4" /> Format JSON
+          </Button>
+          <Button onClick={handleMinify} variant="outline" className="gap-2 rounded-xl">
+            <Minimize className="h-4 w-4" /> Minify JSON
+          </Button>
+        </div>
       </div>
-
-      <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mt-12 relative z-10">
-        <Button onClick={handleFormat} size="lg" className="h-16 px-12 text-xl rounded-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:via-violet-500 hover:to-indigo-500 text-white shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] transition-all hover:scale-105 border-0 gap-3 w-full sm:w-auto">
-          <AlignLeft className="h-6 w-6" /> Format JSON
-        </Button>
-        <Button onClick={handleMinify} variant="secondary" size="lg" className="h-16 px-12 text-xl rounded-full glass-button transition-all hover:scale-105 gap-3 w-full sm:w-auto">
-          <Minimize className="h-6 w-6" /> Minify JSON
-        </Button>
-      </div>
-    </div>
+    </ToolLayout>
   );
 }

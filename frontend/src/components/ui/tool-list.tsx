@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { ArrowUpRight, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type Tool = {
   title: string;
@@ -16,77 +16,126 @@ type Tool = {
 interface ToolListProps {
   tools: Tool[];
   colorTheme: "blue" | "rose" | "violet" | "amber" | "indigo";
+  searchPlaceholder?: string;
 }
 
-export function ToolList({ tools, colorTheme }: ToolListProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+const themeStyles = {
+  blue: {
+    ring: "focus-visible:ring-blue-500/40",
+    card: "border-black/10 dark:border-white/15 hover:border-blue-400/40 dark:hover:border-blue-500/30 hover:shadow-[0_8px_30px_-12px_rgba(59,130,246,0.25)]",
+    icon: "bg-blue-500/10 border-blue-500/20 group-hover:bg-blue-500/15 group-hover:border-blue-500/30",
+    arrow: "text-blue-500",
+  },
+  rose: {
+    ring: "focus-visible:ring-rose-500/40",
+    card: "border-black/10 dark:border-white/15 hover:border-rose-400/40 dark:hover:border-rose-500/30 hover:shadow-[0_8px_30px_-12px_rgba(244,63,94,0.25)]",
+    icon: "bg-rose-500/10 border-rose-500/20 group-hover:bg-rose-500/15 group-hover:border-rose-500/30",
+    arrow: "text-rose-500",
+  },
+  violet: {
+    ring: "focus-visible:ring-violet-500/40",
+    card: "border-black/10 dark:border-white/15 hover:border-violet-400/40 dark:hover:border-violet-500/30 hover:shadow-[0_8px_30px_-12px_rgba(139,92,246,0.25)]",
+    icon: "bg-violet-500/10 border-violet-500/20 group-hover:bg-violet-500/15 group-hover:border-violet-500/30",
+    arrow: "text-violet-500",
+  },
+  amber: {
+    ring: "focus-visible:ring-amber-500/40",
+    card: "border-black/10 dark:border-white/15 hover:border-amber-400/40 dark:hover:border-amber-500/30 hover:shadow-[0_8px_30px_-12px_rgba(245,158,11,0.25)]",
+    icon: "bg-amber-500/10 border-amber-500/20 group-hover:bg-amber-500/15 group-hover:border-amber-500/30",
+    arrow: "text-amber-500",
+  },
+  indigo: {
+    ring: "focus-visible:ring-indigo-500/40",
+    card: "border-black/10 dark:border-white/15 hover:border-indigo-400/40 dark:hover:border-indigo-500/30 hover:shadow-[0_8px_30px_-12px_rgba(99,102,241,0.25)]",
+    icon: "bg-indigo-500/10 border-indigo-500/20 group-hover:bg-indigo-500/15 group-hover:border-indigo-500/30",
+    arrow: "text-indigo-500",
+  },
+};
 
-  const filteredTools = tools.filter((tool) =>
-    tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchQuery.toLowerCase())
+function renderToolIcon(icon: React.ReactNode) {
+  if (!React.isValidElement<{ className?: string }>(icon)) return icon;
+
+  return React.cloneElement(icon, {
+    className: cn("h-5 w-5 shrink-0", icon.props.className),
+  });
+}
+
+export function ToolList({
+  tools,
+  colorTheme,
+  searchPlaceholder = "Search tools...",
+}: ToolListProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const theme = themeStyles[colorTheme];
+
+  const filteredTools = tools.filter(
+    (tool) =>
+      tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tool.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Map theme colors dynamically for Tailwind since dynamic class names need to be safelisted or explicitly written
-  const colorMap = {
-    blue: "bg-blue-500/20 border-blue-500/30 text-blue-400 group-hover:bg-blue-500/20 focus-visible:ring-blue-500 shadow-blue-500/30",
-    rose: "bg-rose-500/20 border-rose-500/30 text-rose-400 group-hover:bg-rose-500/20 focus-visible:ring-rose-500 shadow-rose-500/30",
-    violet: "bg-violet-500/20 border-violet-500/30 text-violet-400 group-hover:bg-violet-500/20 focus-visible:ring-violet-500 shadow-violet-500/30",
-    amber: "bg-amber-500/20 border-amber-500/30 text-amber-400 group-hover:bg-amber-500/20 focus-visible:ring-amber-500 shadow-amber-500/30",
-    indigo: "bg-indigo-500/20 border-indigo-500/30 text-indigo-400 group-hover:bg-indigo-500/20 focus-visible:ring-indigo-500 shadow-indigo-500/30",
-  };
-
-  const gradientMap = {
-    blue: "from-blue-500/5",
-    rose: "from-rose-500/5",
-    violet: "from-violet-500/5",
-    amber: "from-amber-500/5",
-    indigo: "from-indigo-500/5",
-  };
-
-  const ringClass = colorMap[colorTheme].split(" ").find(c => c.startsWith("focus-visible:ring-"));
-  const shadowClass = colorMap[colorTheme].split(" ").find(c => c.startsWith("shadow-"));
-  const hoverBgClass = colorMap[colorTheme].split(" ").find(c => c.startsWith("group-hover:bg-"));
-  const hoverBorderClass = colorMap[colorTheme].split(" ").find(c => c.startsWith("border-")); // Will map correctly below
-  
   return (
-    <div className="w-full">
-      <div className="max-w-2xl mx-auto mb-10 relative">
-        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-muted-foreground" />
-        </div>
+    <div className="w-full max-w-6xl mx-auto">
+      <div className="max-w-md mx-auto mb-8 relative">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         <Input
           type="text"
-          placeholder="Search tools..."
-          className={`pl-12 py-6 text-lg rounded-2xl glass-panel border-white/10 ${ringClass} bg-background/40 w-full shadow-[0_0_30px_-15px_rgba(var(--color-${colorTheme}-500),0.3)]`}
+          placeholder={searchPlaceholder}
+          className={cn(
+            "pl-10 h-11 rounded-xl border-black/10 dark:border-white/15 bg-white dark:bg-white/5 shadow-sm text-sm",
+            theme.ring
+          )}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 max-w-4xl mx-auto relative z-10">
-        {filteredTools.length > 0 ? (
-          filteredTools.map((tool) => (
+      {filteredTools.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          {filteredTools.map((tool) => (
             <Link key={tool.href} href={tool.href} className="group">
-              <Card className="glass-panel hover:-translate-y-1 transition-all duration-300 overflow-hidden relative">
-                <div className={`absolute inset-0 bg-gradient-to-r ${gradientMap[colorTheme]} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                <CardHeader className="flex flex-row items-center gap-6 relative z-10 p-6">
-                  <div className={`bg-white/5 border border-white/10 p-4 rounded-2xl group-hover:scale-110 ${hoverBgClass} transition-all duration-500 shadow-sm shrink-0`}>
-                    {tool.icon}
+              <article
+                className={cn(
+                  "relative h-full flex flex-col rounded-2xl border bg-white dark:bg-white/[0.04] p-4 transition-all duration-200",
+                  "shadow-sm shadow-black/[0.04] dark:shadow-none",
+                  "hover:-translate-y-0.5",
+                  theme.card
+                )}
+              >
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div
+                    className={cn(
+                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-colors duration-200",
+                      theme.icon
+                    )}
+                  >
+                    {renderToolIcon(tool.icon)}
                   </div>
-                  <div className="flex-1">
-                    <CardTitle className={`text-2xl mb-2 transition-colors`}>{tool.title}</CardTitle>
-                    <CardDescription className="text-lg text-muted-foreground/80 leading-relaxed">{tool.description}</CardDescription>
-                  </div>
-                </CardHeader>
-              </Card>
+                  <ArrowUpRight
+                    className={cn(
+                      "h-4 w-4 shrink-0 opacity-0 -translate-y-0.5 translate-x-0.5 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0",
+                      theme.arrow
+                    )}
+                  />
+                </div>
+
+                <h3 className="font-semibold text-sm leading-snug mb-1.5 group-hover:text-foreground transition-colors">
+                  {tool.title}
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 flex-1">
+                  {tool.description}
+                </p>
+              </article>
             </Link>
-          ))
-        ) : (
-          <div className="text-center py-12 glass-panel rounded-3xl">
-            <p className="text-xl text-muted-foreground">No tools found matching "{searchQuery}"</p>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16 rounded-2xl border border-black/10 dark:border-white/15 bg-white dark:bg-white/[0.04] shadow-sm">
+          <p className="text-sm text-muted-foreground">
+            No tools found matching &ldquo;{searchQuery}&rdquo;
+          </p>
+        </div>
+      )}
     </div>
   );
 }

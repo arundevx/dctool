@@ -4,12 +4,18 @@ import ImageConvertClient from "./client";
 import { notFound } from "next/navigation";
 
 // Allowed formats to prevent invalid URLs
-const ALLOWED_FORMATS = ["png", "jpg", "jpeg", "webp"];
+const ALLOWED_FORMATS = ["png", "jpg", "jpeg", "webp", "heic", "heif"];
 
 export async function generateMetadata({ params }: { params: Promise<{ conversion: string }> }) {
   const resolvedParams = await params;
   const parts = resolvedParams.conversion.split("-to-");
-  if (parts.length !== 2) return constructMetadata({ title: "Image Converter" });
+  if (parts.length !== 2) {
+    return constructMetadata({
+      title: "Image Converter",
+      description: "Free online image format converter.",
+      path: "/tools/image",
+    });
+  }
   
   const from = parts[0].toUpperCase();
   const to = parts[1].toUpperCase();

@@ -1,10 +1,13 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DownloadCloud, Video, Download, Loader2, Music } from "lucide-react";
 import axios from "axios";
+import { ToolLayout, toolBreadcrumbs } from "@/components/layout/tool-layout";
+import { CATEGORY_META } from "@/lib/tools";
+import { API_URL, getFilenameFromResponse } from "@/lib/api";
 
 interface FormatInfo {
   format_id: string;
@@ -36,7 +39,7 @@ export default function DownloaderClient() {
     setInfo(null);
     
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/downloader/info`, { url });
+      const response = await axios.post(`${API_URL}/api/downloader/info`, { url });
       setInfo(response.data);
     } catch (err: any) {
       if (err.response && err.response.data && err.response.data.detail) {
@@ -54,27 +57,18 @@ export default function DownloaderClient() {
     setError(null);
     
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/downloader/download`, 
-        { url, format_id: formatId }, 
-        {
-          responseType: 'blob',
-        }
+      const response = await axios.post(`${API_URL}/api/downloader/download`,
+        { url, format_id: formatId },
+        { responseType: "blob" }
       );
 
       const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = downloadUrl;
-      
-      const contentDisposition = response.headers['content-disposition'];
-      let filename = `${info?.title || 'video'}.mp4`;
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
-        if (filenameMatch && filenameMatch.length === 2) {
-          filename = filenameMatch[1];
-        }
-      }
-      
-      link.setAttribute('download', filename);
+      link.setAttribute(
+        "download",
+        getFilenameFromResponse(response, `${info?.title || "video"}.mp4`)
+      );
       document.body.appendChild(link);
       link.click();
       link.parentNode?.removeChild(link);
@@ -87,21 +81,20 @@ export default function DownloaderClient() {
   };
 
   return (
-    <div className="w-full min-h-screen grid-pattern relative">
-      <div className="absolute top-0 left-0 w-full h-[400px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-500/10 via-background to-transparent pointer-events-none -z-10"></div>
-      
-      <div className="container mx-auto py-16 px-4 md:px-8 max-w-5xl relative z-10">
-        <div className="mb-12 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-flex items-center justify-center p-4 bg-violet-500/10 border border-violet-500/20 rounded-3xl mb-6 shadow-[0_0_40px_-10px_rgba(139,92,246,0.3)]">
-            <DownloadCloud className="h-10 w-10 text-violet-500" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-glow bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-purple-600">
-            Online Video Downloader
-          </h1>
-          <p className="text-xl text-muted-foreground/80 max-w-2xl mx-auto">Download videos and audio from hundreds of supported websites. Fast, high-quality, and completely free.</p>
-        </div>
-
-        <div className="glass-panel rounded-3xl overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 mb-8 p-8 md:p-12 border-white/5">
+    <ToolLayout
+      breadcrumbs={toolBreadcrumbs(
+        CATEGORY_META.downloader.label,
+        CATEGORY_META.downloader.href,
+        "Video Downloader"
+      )}
+      title="Online Video Downloader"
+      description="Download videos and audio from hundreds of supported websites. Fast, high-quality, and completely free."
+      icon={<DownloadCloud className="h-10 w-10 text-indigo-500" />}
+      colorTheme="indigo"
+      privacyMode="server"
+      maxWidth="5xl"
+    >
+        <div className="glass-panel rounded-3xl overflow-hidden mb-8 p-8 md:p-12 border-white/5">
           <div className="flex flex-col md:flex-row gap-4">
             <Input 
               className="h-16 text-lg glass-panel border-white/10 rounded-2xl flex-1 px-6 bg-black/20 focus-visible:ring-violet-500" 
@@ -215,7 +208,6 @@ export default function DownloaderClient() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+    </ToolLayout>
   );
 }

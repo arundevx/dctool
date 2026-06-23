@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import images, pdfs, downloader
+from app.api.routes import images, pdfs, downloader, seo
 
 app = FastAPI(
     title="DreamConsole API",
@@ -20,6 +20,7 @@ app.add_middleware(
 app.include_router(images.router, prefix="/api")
 app.include_router(pdfs.router, prefix="/api")
 app.include_router(downloader.router, prefix="/api")
+app.include_router(seo.router, prefix="/api")
 
 @app.get("/")
 async def root():
