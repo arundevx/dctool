@@ -56,7 +56,7 @@ export default function ToolsManagementPage() {
       const settings = toolSettings[toolId];
       await api.put(`/admin/tools${toolId}`, {
         is_enabled: settings.is_enabled,
-        guest_limit: settings.guest_limit === "" ? null : parseInt(settings.guest_limit as string)
+        guest_limit: settings.guest_limit === "" ? null : parseInt(String(settings.guest_limit))
       });
       toast.success("Tool settings updated");
     } catch (error) {

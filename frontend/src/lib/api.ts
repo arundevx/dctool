@@ -1,6 +1,8 @@
 import axios, { type AxiosResponse } from "axios";
+import { getApiOrigin } from "./api-base";
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+/** API host without `/api` — callers append paths like `/api/pdfs/...`. */
+export const API_URL = getApiOrigin();
 
 export async function parseApiBlobError(error: unknown): Promise<string> {
   if (!axios.isAxiosError(error) || !error.response?.data) {

@@ -29,7 +29,6 @@ export function Footer() {
               <li><Link href="/tools/image" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Image Tools</Link></li>
               <li><Link href="/tools/pdf" className="hover:text-rose-600 dark:hover:text-rose-400 transition-colors">PDF Tools</Link></li>
               <li><Link href="/tools/developer" className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">Developer Tools</Link></li>
-              <li><Link href="/tools/downloader" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Video Downloader</Link></li>
               <li><Link href="/tools/seo" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">SEO Tools</Link></li>
             </ul>
           </div>

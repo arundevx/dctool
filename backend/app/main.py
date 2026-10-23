@@ -12,7 +12,12 @@ app = FastAPI(
 # Set up CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://dreamconsole.org", "http://152.53.208.86:5103"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://dreamconsole.org",
+        "https://dreamconsole.online",
+        "http://152.53.208.86:5103",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,8 +1,9 @@
-import axios from 'axios';
-import { useAuthStore } from './store/auth';
+import axios from "axios";
+import { useAuthStore } from "./store/auth";
+import { getApiBaseUrl } from "./api-base";
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api',
+  baseURL: getApiBaseUrl(),
 });
 
 api.interceptors.request.use((config) => {
@@ -16,9 +17,9 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 403 && error.response?.data?.detail?.includes('Guest usage limit')) {
-      if (typeof window !== 'undefined') {
-        window.location.href = '/auth?limit=true';
+    if (error.response?.status === 403 && error.response?.data?.detail?.includes("Guest usage limit")) {
+      if (typeof window !== "undefined") {
+        window.location.href = "/auth?limit=true";
       }
     }
     return Promise.reject(error);

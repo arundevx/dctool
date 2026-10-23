@@ -6,6 +6,18 @@ import { notFound } from "next/navigation";
 // Allowed formats to prevent invalid URLs
 const ALLOWED_FORMATS = ["png", "jpg", "jpeg", "webp", "heic", "heif"];
 
+export function generateStaticParams() {
+  const params: { conversion: string }[] = [];
+  for (const from of ALLOWED_FORMATS) {
+    for (const to of ALLOWED_FORMATS) {
+      if (from !== to) {
+        params.push({ conversion: `${from}-to-${to}` });
+      }
+    }
+  }
+  return params;
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ conversion: string }> }) {
   const resolvedParams = await params;
   const parts = resolvedParams.conversion.split("-to-");

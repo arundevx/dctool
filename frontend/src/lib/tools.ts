@@ -11,6 +11,8 @@ export interface Tool {
   categoryHref: string;
   colorTheme: ToolColorTheme;
   popular?: boolean;
+  /** Hidden from menus, search, and public listings (direct URL still works). */
+  hidden?: boolean;
   keywords?: string[];
 }
 
@@ -245,7 +247,7 @@ export const ALL_TOOLS: Tool[] = [
     description: "Download videos and audio from hundreds of supported websites.",
     href: "/tools/downloader",
     category: "downloader",
-    popular: true,
+    hidden: true,
     keywords: ["youtube", "mp4", "mp3"],
   }),
   tool({
@@ -434,17 +436,19 @@ export const ALL_TOOLS: Tool[] = [
   }),
 ];
 
-export const POPULAR_TOOLS = ALL_TOOLS.filter((t) => t.popular);
+export const VISIBLE_TOOLS = ALL_TOOLS.filter((t) => !t.hidden);
+
+export const POPULAR_TOOLS = VISIBLE_TOOLS.filter((t) => t.popular);
 
 export function getToolsByCategory(category: ToolCategory): Tool[] {
-  return ALL_TOOLS.filter((t) => t.category === category);
+  return VISIBLE_TOOLS.filter((t) => t.category === category);
 }
 
 export function searchTools(query: string): Tool[] {
   const normalized = query.trim().toLowerCase();
-  if (!normalized) return ALL_TOOLS;
+  if (!normalized) return VISIBLE_TOOLS;
 
-  return ALL_TOOLS.filter((t) => {
+  return VISIBLE_TOOLS.filter((t) => {
     const haystack = [t.title, t.description, t.categoryLabel, ...(t.keywords ?? [])]
       .join(" ")
       .toLowerCase();

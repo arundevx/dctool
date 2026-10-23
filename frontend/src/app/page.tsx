@@ -6,7 +6,7 @@ import { HomeHeroSearch } from "@/components/layout/home-hero-search";
 import { ArrowRight, MonitorSmartphone, ShieldCheck, Zap } from "lucide-react";
 import { constructMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/json-ld";
-import { ALL_TOOLS } from "@/lib/tools";
+import { VISIBLE_TOOLS } from "@/lib/tools";
 import { WebSite } from "schema-dts";
 
 export const metadata = constructMetadata({
@@ -16,7 +16,7 @@ export const metadata = constructMetadata({
   path: "/",
 });
 
-const TOOL_COUNT = ALL_TOOLS.length;
+const TOOL_COUNT = VISIBLE_TOOLS.length;
 
 export default function HomePage() {
   const websiteSchema: WebSite = {

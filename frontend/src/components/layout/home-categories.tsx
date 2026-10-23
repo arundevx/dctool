@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CATEGORY_META } from "@/lib/tools";
-import { Image, FileText, Download, Code, Search } from "lucide-react";
+import { Image, FileText, Code, Search } from "lucide-react";
 
 const categories = [
   {
@@ -27,12 +27,6 @@ const categories = [
     title: CATEGORY_META.seo.label,
     description: "Meta tags, sitemaps, slug generator, word counter, and more.",
     icon: <Search className="h-8 w-8 text-amber-500" />,
-  },
-  {
-    ...CATEGORY_META.downloader,
-    title: CATEGORY_META.downloader.label,
-    description: "Download videos and audio from supported websites.",
-    icon: <Download className="h-8 w-8 text-indigo-500" />,
   },
 ];
 

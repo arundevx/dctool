@@ -2,8 +2,9 @@ import { constructMetadata } from "@/lib/seo";
 import DownloaderClient from "./client";
 
 export const metadata = constructMetadata({
-  title: "Online Video Downloader",
-  description: "Download videos and audio from hundreds of supported websites in high quality.",
+  title: "Pulse Downloader — Universal Video & Audio Download",
+  description:
+    "Professional media downloader powered by yt-dlp. Best quality video merge, MP3/M4A audio extraction, and support for 1000+ sites.",
   path: "/tools/downloader",
 });
 

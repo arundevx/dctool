@@ -52,7 +52,6 @@ export function Header() {
             <Link href="/tools/image" className={`transition-colors hover:text-indigo-600 dark:hover:text-indigo-400 ${pathname?.startsWith("/tools/image") ? "text-indigo-600 dark:text-indigo-400 font-semibold" : "text-foreground/70"}`}>Image Tools</Link>
             <Link href="/tools/pdf" className={`transition-colors hover:text-rose-600 dark:hover:text-rose-400 ${pathname?.startsWith("/tools/pdf") ? "text-rose-600 dark:text-rose-400 font-semibold" : "text-foreground/70"}`}>PDF Tools</Link>
             <Link href="/tools/developer" className={`transition-colors hover:text-violet-600 dark:hover:text-violet-400 ${pathname?.startsWith("/tools/developer") ? "text-violet-600 dark:text-violet-400 font-semibold" : "text-foreground/70"}`}>Developer</Link>
-            <Link href="/tools/downloader" className={`transition-colors hover:text-purple-600 dark:hover:text-purple-400 ${pathname?.startsWith("/tools/downloader") ? "text-purple-600 dark:text-purple-400 font-semibold" : "text-foreground/70"}`}>Downloader</Link>
             <Link href="/tools/seo" className={`transition-colors hover:text-amber-600 dark:hover:text-amber-400 ${pathname?.startsWith("/tools/seo") ? "text-amber-600 dark:text-amber-400 font-semibold" : "text-foreground/70"}`}>SEO</Link>
             <Link href="/faq" className={`transition-colors hover:text-indigo-600 dark:hover:text-indigo-400 ${pathname?.startsWith("/faq") ? "text-indigo-600 dark:text-indigo-400 font-semibold" : "text-foreground/70"}`}>FAQ</Link>
           </nav>
@@ -72,16 +71,12 @@ export function Header() {
                     <span className="text-sm font-medium hidden lg:block">{user?.email?.split('@')[0]}</span>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem asChild>
-                      <Link href="/profile" className="cursor-pointer w-full flex items-center">
-                        Profile
-                      </Link>
+                    <DropdownMenuItem onClick={() => router.push("/profile")} className="cursor-pointer w-full flex items-center">
+                      Profile
                     </DropdownMenuItem>
                     {user?.role === "admin" && (
-                      <DropdownMenuItem asChild>
-                        <Link href="/admin" className="cursor-pointer w-full flex items-center">
-                          Admin Dashboard
-                        </Link>
+                      <DropdownMenuItem onClick={() => router.push("/admin")} className="cursor-pointer w-full flex items-center">
+                        Admin Dashboard
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
@@ -108,7 +103,6 @@ export function Header() {
                     <Link href="/tools/image" className={`text-base font-medium p-3 rounded-xl transition-colors hover:bg-indigo-500/10 hover:text-indigo-600 ${pathname?.startsWith("/tools/image") ? "bg-indigo-500/10 text-indigo-600" : "text-foreground/70"}`}>Image Tools</Link>
                     <Link href="/tools/pdf" className={`text-base font-medium p-3 rounded-xl transition-colors hover:bg-rose-500/10 hover:text-rose-600 ${pathname?.startsWith("/tools/pdf") ? "bg-rose-500/10 text-rose-600" : "text-foreground/70"}`}>PDF Tools</Link>
                     <Link href="/tools/developer" className={`text-base font-medium p-3 rounded-xl transition-colors hover:bg-violet-500/10 hover:text-violet-600 ${pathname?.startsWith("/tools/developer") ? "bg-violet-500/10 text-violet-600" : "text-foreground/70"}`}>Developer Tools</Link>
-                    <Link href="/tools/downloader" className={`text-base font-medium p-3 rounded-xl transition-colors hover:bg-purple-500/10 hover:text-purple-600 ${pathname?.startsWith("/tools/downloader") ? "bg-purple-500/10 text-purple-600" : "text-foreground/70"}`}>Downloader</Link>
                     <Link href="/tools/seo" className={`text-base font-medium p-3 rounded-xl transition-colors hover:bg-amber-500/10 hover:text-amber-600 ${pathname?.startsWith("/tools/seo") ? "bg-amber-500/10 text-amber-600" : "text-foreground/70"}`}>SEO Tools</Link>
                     <Link href="/faq" className={`text-base font-medium p-3 rounded-xl transition-colors hover:bg-indigo-500/10 hover:text-indigo-600 ${pathname?.startsWith("/faq") ? "bg-indigo-500/10 text-indigo-600" : "text-foreground/70"}`}>FAQ</Link>
                     

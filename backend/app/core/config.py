@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
+import urllib.parse
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "DreamConsole API"
@@ -15,7 +16,8 @@ class Settings(BaseSettings):
     
     @property
     def DATABASE_URI(self) -> str:
-        return f"mysql+aiomysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_SERVER}:{self.MYSQL_PORT}/{self.MYSQL_DB}"
+        encoded_password = urllib.parse.quote_plus(self.MYSQL_PASSWORD)
+        return f"mysql+aiomysql://{self.MYSQL_USER}:{encoded_password}@{self.MYSQL_SERVER}:{self.MYSQL_PORT}/{self.MYSQL_DB}"
 
     class Config:
         case_sensitive = True
